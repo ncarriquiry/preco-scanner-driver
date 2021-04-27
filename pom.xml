@@ -4,13 +4,108 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>PrecoScan</artifactId>
+    <groupId>com.precodata</groupId>
+    <artifactId>ImageUtils</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
+    <build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>lib</directory>
+                <includes>
+                    <include>*.jar</include>
+                </includes>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>lib</directory>
+                <includes>
+                    <include>*.dll</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+        <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.1.1</version>
+            <configuration>
+                <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                </descriptorRefs>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                    <phase>package</phase> <!-- bind to the packaging phase -->
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        </plugins>
+    </build>
 
+    <repositories>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>com.github.jai-imageio</groupId>
+            <artifactId>jai-imageio-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
+        </dependency>
+        <!-- <dependency>
+            <groupId>scanner</groupId>
+            <artifactId>TWAINDSM</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <type>dll</type>
+            <systemPath>${basedir}/lib/TWAINDSM.DLL</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>scanner</groupId>
+            <artifactId>morena</artifactId>
+            <version>windows</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/morena_windows.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>scanner</groupId>
+            <artifactId>morena</artifactId>
+            <version>license</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/morena_license.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>scanner</groupId>
+            <artifactId>morena</artifactId>
+            <version>7.0_win</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/morena7_win.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>scanner</groupId>
+            <artifactId>morena</artifactId>
+            <version>7.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/morena7.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>scanner</groupId>
+            <artifactId>morena</artifactId>
+            <version>6.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/morena.jar</systemPath>
+        </dependency> -->
+    </dependencies>
 </project>

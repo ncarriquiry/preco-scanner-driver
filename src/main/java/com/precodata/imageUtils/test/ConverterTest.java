@@ -8,9 +8,13 @@ import java.util.Date;
 public class ConverterTest {
     public static void main(String[] args)  {
 
-        System.out.print("reading file : " + "image.jpg");
+        String pFile = "image.jpg";
+        if (args.length > 0)
+            pFile = args[0];
+
+        System.out.print("reading file : " + pFile);
         long beforeRead = (new Date()).getTime();
-        String jpg = Converter.readFile("image.jpg", "jpg");
+        String jpg = Converter.readFile(pFile, "jpg");
         long afterRead = (new Date()).getTime();
         System.out.println(". readTime " + (afterRead - beforeRead) + "ms." );
 

@@ -1,12 +1,12 @@
 package com.precodata.imageUtils;
 
-import SK.gnome.morena.BASE64;
 import org.json.JSONArray;
 
 import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
+import javax.xml.bind.DatatypeConverter;
 
 import java.io.*;
 import java.util.*;
@@ -21,11 +21,12 @@ public class Converter {
         TreeSet<String> seen = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         seen.add("pcx");
         seen.add("wbmp");
+        seen.add("raw");
 
         Iterator<String> itr = list.iterator();
         while (itr.hasNext()) {
             String item = itr.next();
-            if (!seen.contains(item) ) {
+            if (seen.contains(item) ) {
                 itr.remove();
             }
         }
@@ -45,7 +46,7 @@ public class Converter {
             Iterator<String> itr = list.iterator();
             while (itr.hasNext()) {
                 String item = itr.next();
-                if (!seen.contains(item) ) {
+                if (seen.contains(item) ) {
                     itr.remove();
                 }
             }
@@ -57,7 +58,7 @@ public class Converter {
     public static String readFile(String fileName, String format) {
         try {
             BufferedImage image = ImageIO.read(new File(fileName));
-            return BASE64.encode(toByteArray(image, format));
+            return DatatypeConverter.printBase64Binary(toByteArray(image, format));
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -75,7 +76,7 @@ public class Converter {
             reader.setInput(is);
             if (page <= reader.getNumImages(true)) {
                 BufferedImage image = reader.read(page);
-                return BASE64.encode(toByteArray(image, "tif"));
+                return DatatypeConverter.printBase64Binary(toByteArray(image, "tif"));
             } else
                return "error";
         } catch (IOException e) {
@@ -86,7 +87,7 @@ public class Converter {
     public static void saveFile(String base64Content, String filename) {
         try {
             OutputStream fos = new FileOutputStream(filename);
-            fos.write(BASE64.decode(base64Content));
+            fos.write(DatatypeConverter.parseBase64Binary(base64Content));
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,11 +101,11 @@ public class Converter {
             ImageOutputStream  ios =  ImageIO.createImageOutputStream(baos);
             ImageWriter writer = ImageIO.getImageWritersByFormatName(format).next();
             writer.setOutput(ios);
-            IIOImage iioImage = new IIOImage(toBufferedImage(BASE64.decode(base64Image)), null, null);
+            IIOImage iioImage = new IIOImage(toBufferedImage(DatatypeConverter.parseBase64Binary(base64Image)), null, null);
 
 
             ImageWriteParam iwp = writer.getDefaultWriteParam();
-            if (iwp.canWriteCompressed())
+            if (!compressionType.equals(""))
             {
                 iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
                 iwp.setCompressionType(compressionType);
@@ -117,9 +118,9 @@ public class Converter {
             //RenderedImage out = ImageIO.read(bai);
             byte[] byteArray = baos.toByteArray();
             if (byteArray.length == 0)
-                return BASE64.encode(getBytes(ios));
+                return DatatypeConverter.printBase64Binary(getBytes(ios));
             else
-                return BASE64.encode(byteArray);
+                return DatatypeConverter.printBase64Binary(byteArray);
 
         } catch (IOException e) {
             return "error";
@@ -142,12 +143,12 @@ public class Converter {
             JSONArray arr = new JSONArray(base64ImageArray);
             for(int i = 0; i < arr.length(); i++) {
                 System.out.println("page " + i);
-                IIOImage iioImage = new IIOImage(toBufferedImage(BASE64.decode( (String) arr.get(i))), null, null);
+                IIOImage iioImage = new IIOImage(toBufferedImage(DatatypeConverter.parseBase64Binary( (String) arr.get(i))), null, null);
                 writer.writeToSequence(iioImage, writeParam);
             }
             writer.dispose();
 
-            return BASE64.encode(getBytes(ios));
+            return DatatypeConverter.printBase64Binary(getBytes(ios));
         } catch (IOException e) {
             e.printStackTrace();
             return "error";

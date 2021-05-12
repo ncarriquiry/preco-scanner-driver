@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>7</maven.compiler.source>
+        <maven.compiler.target>7</maven.compiler.target>
     </properties>
     <build>
         <resources>
@@ -52,6 +52,10 @@
     </build>
 
     <repositories>
+        <repository>
+            <id>gnome</id>
+            <url>https://github.com/ncarriquiry/preco-scanner-driver/raw/repo</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -64,48 +68,50 @@
             <artifactId>json</artifactId>
             <version>20210307</version>
         </dependency>
-        <!-- <dependency>
-            <groupId>scanner</groupId>
-            <artifactId>TWAINDSM</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <type>dll</type>
-            <systemPath>${basedir}/lib/TWAINDSM.DLL</systemPath>
+        <dependency>
+            <groupId>gnome</groupId>
+            <artifactId>morena6</artifactId>
+            <version>6</version>
+            <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>scanner</groupId>
-            <artifactId>morena</artifactId>
-            <version>windows</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/morena_windows.jar</systemPath>
+            <groupId>gnome</groupId>
+            <artifactId>morena7</artifactId>
+            <version>7</version>
+            <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>scanner</groupId>
-            <artifactId>morena</artifactId>
-            <version>license</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/morena_license.jar</systemPath>
+            <groupId>gnome</groupId>
+            <artifactId>morena7_win</artifactId>
+            <version>7</version>
+            <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>scanner</groupId>
-            <artifactId>morena</artifactId>
-            <version>7.0_win</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/morena7_win.jar</systemPath>
+            <groupId>gnome</groupId>
+            <artifactId>morena_license</artifactId>
+            <version>7</version>
+            <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>scanner</groupId>
-            <artifactId>morena</artifactId>
-            <version>7.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/morena7.jar</systemPath>
+            <groupId>gnome</groupId>
+            <artifactId>twaindsm</artifactId>
+            <version>6</version>
+            <type>pom</type>
         </dependency>
         <dependency>
-            <groupId>scanner</groupId>
-            <artifactId>morena</artifactId>
-            <version>6.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/morena.jar</systemPath>
-        </dependency> -->
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>2.9.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,5 +1,6 @@
 package com.precodata.imageUtils;
 
+import SK.gnome.morena.BASE64;
 import org.json.JSONArray;
 
 import javax.imageio.*;
@@ -20,7 +21,15 @@ public class Converter {
         TreeSet<String> seen = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         seen.add("pcx");
         seen.add("wbmp");
-        list.removeIf(s -> !seen.add(s));
+
+        Iterator<String> itr = list.iterator();
+        while (itr.hasNext()) {
+            String item = itr.next();
+            if (!seen.contains(item) ) {
+                itr.remove();
+            }
+        }
+
         return (new JSONArray(list)).toString();
     };
     public static String getCompressionMethods(String format) {
@@ -33,7 +42,13 @@ public class Converter {
             List<String> list = new ArrayList(Arrays.asList(iwp.getCompressionTypes()));
 
             TreeSet<String> seen = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-            list.removeIf(s -> !seen.add(s));
+            Iterator<String> itr = list.iterator();
+            while (itr.hasNext()) {
+                String item = itr.next();
+                if (!seen.contains(item) ) {
+                    itr.remove();
+                }
+            }
 
             jsa = new JSONArray(list);
         }
@@ -42,7 +57,7 @@ public class Converter {
     public static String readFile(String fileName, String format) {
         try {
             BufferedImage image = ImageIO.read(new File(fileName));
-            return Base64.getEncoder().encodeToString(toByteArray(image, format));
+            return BASE64.encode(toByteArray(image, format));
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -60,7 +75,7 @@ public class Converter {
             reader.setInput(is);
             if (page <= reader.getNumImages(true)) {
                 BufferedImage image = reader.read(page);
-                return Base64.getEncoder().encodeToString(toByteArray(image, "tif"));
+                return BASE64.encode(toByteArray(image, "tif"));
             } else
                return "error";
         } catch (IOException e) {
@@ -71,7 +86,7 @@ public class Converter {
     public static void saveFile(String base64Content, String filename) {
         try {
             OutputStream fos = new FileOutputStream(filename);
-            fos.write(Base64.getDecoder().decode(base64Content));
+            fos.write(BASE64.decode(base64Content));
             fos.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,7 +100,7 @@ public class Converter {
             ImageOutputStream  ios =  ImageIO.createImageOutputStream(baos);
             ImageWriter writer = ImageIO.getImageWritersByFormatName(format).next();
             writer.setOutput(ios);
-            IIOImage iioImage = new IIOImage(toBufferedImage(Base64.getDecoder().decode(base64Image)), null, null);
+            IIOImage iioImage = new IIOImage(toBufferedImage(BASE64.decode(base64Image)), null, null);
 
 
             ImageWriteParam iwp = writer.getDefaultWriteParam();
@@ -102,9 +117,9 @@ public class Converter {
             //RenderedImage out = ImageIO.read(bai);
             byte[] byteArray = baos.toByteArray();
             if (byteArray.length == 0)
-                return Base64.getEncoder().encodeToString(getBytes(ios));
+                return BASE64.encode(getBytes(ios));
             else
-                return Base64.getEncoder().encodeToString(byteArray);
+                return BASE64.encode(byteArray);
 
         } catch (IOException e) {
             return "error";
@@ -127,12 +142,12 @@ public class Converter {
             JSONArray arr = new JSONArray(base64ImageArray);
             for(int i = 0; i < arr.length(); i++) {
                 System.out.println("page " + i);
-                IIOImage iioImage = new IIOImage(toBufferedImage(Base64.getDecoder().decode( (String) arr.get(i))), null, null);
+                IIOImage iioImage = new IIOImage(toBufferedImage(BASE64.decode( (String) arr.get(i))), null, null);
                 writer.writeToSequence(iioImage, writeParam);
             }
             writer.dispose();
 
-            return Base64.getEncoder().encodeToString(getBytes(ios));
+            return BASE64.encode(getBytes(ios));
         } catch (IOException e) {
             e.printStackTrace();
             return "error";

@@ -1,4 +1,4 @@
-package com.precodata.imageUtils.test;
+package com.precodata.imageUtils.Scanner;
 
 //
 // Source code recreated from a .class file by IntelliJ IDEA

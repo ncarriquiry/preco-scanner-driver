@@ -5,6 +5,5 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES />
-    <jarDirectory url="jar://$PROJECT_DIR$/lib/morena_license.jar!/" recursive="false" />
   </library>
 </component>

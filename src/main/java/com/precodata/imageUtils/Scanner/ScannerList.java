@@ -26,7 +26,6 @@ public class ScannerList {
 
         try {
             MorenaSource[] sources = TwainManager.listSources();
-            System.out.println("twain devices : " + sources.length);
             for (int i = 0; i < sources.length; i++)
                 list.add(Scanner.newScanner("twain", sources[i].toString()));
 
@@ -57,13 +56,19 @@ public class ScannerList {
         try {
             MorenaSource[] sources = TwainManager.listSources();
             for (int i = 0; i < sources.length; i++)
-                if (sources.toString().equals(name))
+                if (sources[i].toString().equals(name))
                     return sources[i];
         } catch (TwainException e)
         {
         }
+        try {
+            Morena.close();
+        } catch (MorenaException e) {
+            e.printStackTrace();
+        }
         return null;
     }
+
 
 
     private String toJSON() {return new Gson().toJson(getScannerList());}

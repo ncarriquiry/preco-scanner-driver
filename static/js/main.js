@@ -5,9 +5,17 @@ window.onload = function () {
   var URL = window.URL || window.webkitURL;
   var container = document.querySelector('.img-container');
   var image = container.getElementsByTagName('img').item(0);
+  var download = document.getElementById('download');
   var actions = document.getElementById('actions');
+  var dataX = document.getElementById('dataX');
+  var dataY = document.getElementById('dataY');
+  var dataHeight = document.getElementById('dataHeight');
+  var dataWidth = document.getElementById('dataWidth');
+  var dataRotate = document.getElementById('dataRotate');
+  var dataScaleX = document.getElementById('dataScaleX');
+  var dataScaleY = document.getElementById('dataScaleY');
   var options = {
-    //aspectRatio: 16 / 9,
+    aspectRatio: 16 / 9,
     preview: '.img-preview',
     ready: function (e) {
       console.log(e.type);
@@ -23,21 +31,26 @@ window.onload = function () {
     },
     crop: function (e) {
       var data = e.detail;
-		
+
       console.log(e.type);
+      dataX.value = Math.round(data.x);
+      dataY.value = Math.round(data.y);
+      dataHeight.value = Math.round(data.height);
+      dataWidth.value = Math.round(data.width);
+      dataRotate.value = typeof data.rotate !== 'undefined' ? data.rotate : '';
+      dataScaleX.value = typeof data.scaleX !== 'undefined' ? data.scaleX : '';
+      dataScaleY.value = typeof data.scaleY !== 'undefined' ? data.scaleY : '';
     },
     zoom: function (e) {
       console.log(e.type, e.detail.ratio);
     }
   };
-  var cropper;
-  var originalImageURL;
-  var uploadedImageType;
-  var uploadedImageName;
+  var cropper = new Cropper(image, options);
+  var originalImageURL = image.src;
+  var uploadedImageType = 'image/jpeg';
+  var uploadedImageName = 'cropped.jpg';
   var uploadedImageURL;
 
-  // Tooltip
-  $('[data-toggle="tooltip"]').tooltip();
 
   // Buttons
   if (!document.createElement('canvas').getContext) {
@@ -49,6 +62,54 @@ window.onload = function () {
     $('button[data-method="scale"]').prop('disabled', true);
   }
 
+  // Download
+  if (typeof download.download === 'undefined') {
+    download.className += ' disabled';
+    download.title = 'Your browser does not support download';
+  }
+
+  // Options
+  actions.querySelector('.docs-toggles').onchange = function (event) {
+    var e = event || window.event;
+    var target = e.target || e.srcElement;
+    var cropBoxData;
+    var canvasData;
+    var isCheckbox;
+    var isRadio;
+
+    if (!cropper) {
+      return;
+    }
+
+    if (target.tagName.toLowerCase() === 'label') {
+      target = target.querySelector('input');
+    }
+
+    isCheckbox = target.type === 'checkbox';
+    isRadio = target.type === 'radio';
+
+    if (isCheckbox || isRadio) {
+      if (isCheckbox) {
+        options[target.name] = target.checked;
+        cropBoxData = cropper.getCropBoxData();
+        canvasData = cropper.getCanvasData();
+
+        options.ready = function () {
+          console.log('ready');
+          cropper.setCropBoxData(cropBoxData).setCanvasData(canvasData);
+        };
+      } else {
+        options[target.name] = target.value;
+        options.ready = function () {
+          console.log('ready');
+        };
+      }
+
+      // Restart
+      cropper.destroy();
+      cropper = new Cropper(image, options);
+    }
+  };
 
   // Methods
   actions.querySelector('.docs-buttons').onclick = function (event) {
@@ -58,7 +119,11 @@ window.onload = function () {
     var result;
     var input;
     var data;
-	
+
+    if (!cropper) {
+      return;
+    }
+
     while (target !== this) {
       if (target.getAttribute('data-method')) {
         break;
@@ -77,25 +142,6 @@ window.onload = function () {
       option: target.getAttribute('data-option') || undefined,
       secondOption: target.getAttribute('data-second-option') || undefined
     };
-
-	if (data.method == 'scan') {
-	  var inputImage = document.getElementById('inputImage');
-
-	  $.get("http://localhost:1235/getImage",
-		  function(data, status){
-			image.src = 'data:image/jpeg;base64,' + data;
-			image.style = "display: visible;";
-			
-			cropper = new Cropper(image, options);
-			originalImageURL = image.src;
-			uploadedImageType = 'image/jpeg';
-			uploadedImageName = 'cropped.jpg';
-		  }
-	  );
-	}
-    if (!cropper) {
-      return;
-    }
 
     cropped = cropper.cropped;
 
@@ -138,8 +184,7 @@ window.onload = function () {
           break;
       }
 
-	  if (data.method != 'scan')
-		result = cropper[data.method](data.option, data.secondOption);
+      result = cropper[data.method](data.option, data.secondOption);
 
       switch (data.method) {
         case 'rotate':
@@ -177,7 +222,6 @@ window.onload = function () {
           }
 
           break;
-		
       }
 
       if (typeof result === 'object' && result !== cropper && input) {
@@ -219,4 +263,41 @@ window.onload = function () {
         break;
     }
   };
-}
+
+  // Import image
+  var inputImage = document.getElementById('inputImage');
+
+  if (URL) {
+    inputImage.onchange = function () {
+      var files = this.files;
+      var file;
+
+      if (files && files.length) {
+        file = files[0];
+
+        if (/^image\/\w+/.test(file.type)) {
+          uploadedImageType = file.type;
+          uploadedImageName = file.name;
+
+          if (uploadedImageURL) {
+            URL.revokeObjectURL(uploadedImageURL);
+          }
+
+          image.src = uploadedImageURL = URL.createObjectURL(file);
+
+          if (cropper) {
+            cropper.destroy();
+          }
+
+          cropper = new Cropper(image, options);
+          inputImage.value = null;
+        } else {
+          window.alert('Please choose an image file.');
+        }
+      }
+    };
+  } else {
+    inputImage.disabled = true;
+    inputImage.parentNode.className += ' disabled';
+  }
+};

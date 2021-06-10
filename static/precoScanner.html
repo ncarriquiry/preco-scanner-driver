@@ -1,0 +1,77 @@
+<link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico"/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" crossorigin="anonymous"/>
+<link rel="stylesheet" href="css/precoScanner.css"/>
+<link rel="stylesheet" href="css/cropper.min.css"/>
+<div class="precoScanner">
+	<div class="divTable">
+		<div class="divTableRow">
+			<div class="divTableCell">
+				<div class="divTable">
+					<div class="divTableRow">
+						<div class="divTableRow">
+							<div class="divTableCell">
+								<button type="button" title="Move" id="buttonMove">
+									<span class="fa fa-arrows-alt"/>
+								</button>
+							</div>
+							<div class="divTableCell">
+								<button type="button" title="Crop" id="buttonCrop">
+									<span class="fa fa-crop-alt"/>
+								</button>
+							</div>
+							<div class="divTableCell" >
+								<button type="button" title="Zoom In"  id="buttonZoomIn">
+									<span class="fa fa-search-plus"/>
+								</button>
+							</div>
+							<div class="divTableCell">
+								<button type="button" title="Zoom Out" id="buttonZoomOut">
+									<span class="fa fa-search-minus"/>
+								</button>
+							</div>
+							<div class="divTableCell">
+								<button type="button" title="Upload" id="buttonUpload" onclick='$("#inputImage").click();'>
+									<span class="fa fa-upload"/>
+								</button>
+								<label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file" style="display:none;">
+									<input type="file" class="sr-only" id="inputImage" name="file" accept="image/*">
+									<span class="fa fa-upload"></span>
+								</label>
+							</div>
+							<div class="divTableCell">
+								<button type="button" title="Scan" id="buttonScanner">
+									<span class="fa fa-print"/>
+								</button>
+							</div>
+							<div class="divTableCell">
+								<button type="button" title="Save" id="buttonSave">
+									<span class="fa fa-hdd"/>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="divTableRow">
+			<div class="divTableCell">
+				<div class="divTable">
+					<div class="divTableRow">
+						<div class="divTableCell">
+						<div id="imageContainer">
+							<img id="precoScannerImage" src="img/lagertha.jpg"/>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="divTableCell">
+				<div class="imgPreview">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="js/precoScanner.js"></script>
+<script src="js/cropper.min.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
